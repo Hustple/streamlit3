@@ -13,13 +13,13 @@ import google.generativeai as genai
 from groq import Groq
 
 # App configuration
-st.set_page_config(page_title="KerasInsight -> Multi-Model Chat", layout="wide")
+st.set_page_config(page_title="GSOC-Data", layout="wide")
 
 # Sidebar for model selection
 st.sidebar.title("Select Model")
 selected_model = st.sidebar.radio(
     "Choose a model:",
-    options=["Mixtral"]
+    options=["LLaMA", "Mixtral"]
 )
 
 # Main chat interface
