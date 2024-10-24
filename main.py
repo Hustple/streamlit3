@@ -12,15 +12,58 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 import google.generativeai as genai
 from groq import Groq
 
-# App configuration
-st.set_page_config(page_title="GSOC-Data", layout="wide")
+# Page Configuration
+st.set_page_config(page_title="GSOC AI Assistant", layout="wide", initial_sidebar_state="expanded")
 
-# Sidebar for model selection
+# Custom CSS for enhanced design
+st.markdown("""
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .main-title {
+            font-family: 'Arial', sans-serif;
+            color: #0047AB;
+            font-weight: bold;
+            font-size: 40px;
+        }
+        .chatbox {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .stTextInput>div>input {
+            border-radius: 10px;
+            border: 2px solid #0047AB;
+        }
+        .context-scores {
+            background-color: #E0F7FA;
+            border-left: 5px solid #00ACC1;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .sidebar .block-container {
+            background-color: #333333;
+        }
+        .sidebar .sidebar-content h2 {
+            color: #FFD700;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Sidebar for Model Selection
 st.sidebar.title("Select Model")
 selected_model = st.sidebar.radio(
     "Choose a model:",
     options=["LLaMA", "Mixtral"]
 )
+
+# Title & Header
+st.markdown("<h1 class='main-title'>GSOC AI Assistant</h1>", unsafe_allow_html=True)
+st.markdown("**Explore GSOC data with AI-powered insights**")
 
 # Main chat interface
 st.title("GSOC")
