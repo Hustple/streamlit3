@@ -24,7 +24,7 @@ selected_model = st.sidebar.radio(
 
 # Main chat interface
 st.title("GSOC")
-INDEX_NAME = 'dlprojectchecknomic'
+INDEX_NAME = 'rag-gsoc-data-dlproject'
 
 @st.cache_resource
 def initialize_vector_store():

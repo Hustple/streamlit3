@@ -1,4 +1,4 @@
-rag_prompt = """You are an intelligent assistant designed to provide accurate and relevant information from Keras documentation.
+rag_prompt = """You are an intelligent assistant designed to provide accurate and relevant information from GSOC organization data.
 
         Here is the retrieved context, which may contain both explanatory text and meaningful code snippets:
 
