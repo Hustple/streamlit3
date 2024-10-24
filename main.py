@@ -5,9 +5,8 @@ from components.score_display import display_scores
 from langchain_pinecone import PineconeVectorStore
 
 from vector_store.vectorstore import PineconeManager
-pinecone_api_key = st.secrets["pinecone_api_key"]
-gemini_api_key = st.secrets["gemini_api_key"]
-groq_api_key = st.secrets["groq_api_key"]
+pinecone_api_key = "108137e8-b872-4ff4-a279-c61e8a7ec4ca"
+groq_api_key ="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"
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import google.generativeai as genai
 from groq import Groq
@@ -19,11 +18,11 @@ st.set_page_config(page_title="KerasInsight -> Multi-Model Chat", layout="wide")
 st.sidebar.title("Select Model")
 selected_model = st.sidebar.radio(
     "Choose a model:",
-    options=["Gemini", "LLaMA", "Mixtral"]
+    options=["Mixtral"]
 )
 
 # Main chat interface
-st.title("KerasInsight -> AI Chat Interface")
+st.title("GSOC")
 INDEX_NAME = 'dlprojectchecknomic'
 
 @st.cache_resource
@@ -33,9 +32,6 @@ def initialize_vector_store():
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vector_store = PineconeVectorStore(index=pinecone_manager.index, embedding=embeddings)
     retriever = vector_store.as_retriever(search_kwargs={"k": 3})
-    genai.configure(api_key=gemini_api_key)
-    tuned_model = genai.get_tuned_model('tunedModels/finetuninggemmafordl1-xxcubsl6ftaf')
-    model = genai.GenerativeModel(model_name=tuned_model.name)
     client = Groq(
         api_key=groq_api_key
     )

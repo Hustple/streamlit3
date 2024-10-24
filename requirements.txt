@@ -1,0 +1,9 @@
+streamlit
+groq
+google-generativeai
+pinecone-client
+langchain
+langchain-core
+langchain-pinecone
+langchain-community
+sentence-transformers
