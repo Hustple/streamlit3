@@ -12,58 +12,16 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 import google.generativeai as genai
 from groq import Groq
 
-# Page Configuration
-st.set_page_config(page_title="GSOC AI Assistant", layout="wide", initial_sidebar_state="expanded")
+# App configuration
+st.set_page_config(page_title="GSOC-Data", layout="wide")
 
-# Custom CSS for enhanced design
-st.markdown("""
-    <style>
-        body {
-            background-color: #f5f5f5;
-        }
-        .main-title {
-            font-family: 'Arial', sans-serif;
-            color: #0047AB;
-            font-weight: bold;
-            font-size: 40px;
-        }
-        .chatbox {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .stTextInput>div>input {
-            border-radius: 10px;
-            border: 2px solid #0047AB;
-        }
-        .context-scores {
-            background-color: #E0F7FA;
-            border-left: 5px solid #00ACC1;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-        }
-        .sidebar .block-container {
-            background-color: #333333;
-        }
-        .sidebar .sidebar-content h2 {
-            color: #FFD700;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# Sidebar for Model Selection
+# Sidebar for model selection
 st.sidebar.title("Select Model")
 selected_model = st.sidebar.radio(
     "Choose a model:",
     options=["LLaMA", "Mixtral"]
 )
 
-# Title & Header
-st.markdown("<h1 class='main-title'>GSOC AI Assistant</h1>", unsafe_allow_html=True)
-st.markdown("**Explore GSOC data with AI-powered insights**")
 
 # Main chat interface
 st.title("GSOC")
@@ -87,51 +45,17 @@ def initialize_vector_store():
 retriever, model, client = initialize_vector_store()
 
 
-st.write("## 🤖 **Ask a Question:**")
+# Chat functionality
+user_query = st.text_input("Ask a question:")
+if user_query:
+    with st.spinner("Fetching response..."):
+        # Fetch response from the selected model
+        response, scores, context = get_model_response(selected_model, user_query,retriever,model,client)
+    
+    # Display the chat interface
+    chat_interface(user_query, response)
 
-# Two-column layout for enhanced structure
-col1, col2 = st.columns([2, 1])
-
-# Left column (Chat Interface)
-with col1:
-    user_query = st.text_input("🔍 Type your question here", key="user_query")
-
-    if user_query:
-        with st.spinner("Generating response..."):
-            try:
-                response, scores, context = get_model_response(selected_model, user_query, retriever, model, client)
-
-                # Display the response inside a chat box
-                st.markdown("### 💬 **AI Response**")
-                st.markdown(f"<div class='chatbox'>**User:** {user_query}<br>**AI:** {response}</div>", unsafe_allow_html=True)
-
-            except Exception as e:
-                st.error(f"Error occurred: {str(e)}")
-
-# Right column (Context & Scores)
-with col2:
-    st.markdown("### 📊 **Context and Scores**")
-    if user_query:
-        st.markdown("<div class='context-scores'>", unsafe_allow_html=True)
-        
-        # Display the retrieved context
-        st.subheader("📑 Context")
-        st.write(context if context else "No context retrieved.")
-
-        # Display the scores
-        st.subheader("🔢 Scores")
-        if scores:
-            display_scores(context, scores)
-        else:
-            st.write("No scores available.")
-        
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# Footer and Branding
-st.write("---")
-st.markdown("""
-    <div style='text-align: center;'>
-        <small>GSOC Data Retrieval System | Powered by LangChain, Pinecone, HuggingFace, and Google Gemini</small>
-    </div>
-""", unsafe_allow_html=True)
-
+    # Display the context and scores on the right
+    st.write("---")
+    st.header("Context and Scores")
+    display_scores(context, scores)
