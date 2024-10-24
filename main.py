@@ -12,79 +12,18 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 import google.generativeai as genai
 from groq import Groq
 
-# Set Streamlit page configuration and dark mode theme
-st.set_page_config(page_title="GSOC-Data", layout="wide", initial_sidebar_state="collapsed")
+# App configuration
+st.set_page_config(page_title="GSOC-Data", layout="wide")
 
-# Inject custom CSS for dark mode and styling
-st.markdown("""
-    <style>
-        body {
-            background-color: #1E1E1E;
-            color: white;
-        }
-        .stSidebar {
-            background-color: #333333;
-        }
-        .css-1lcbmhc {
-            background-color: #333333;
-        }
-        h1, h2, h3, h4 {
-            color: #FFD700; /* Gold */
-        }
-        .stButton>button {
-            background-color: #FFD700;
-            color: black;
-            font-weight: bold;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Sidebar for model selection (still giving option but redesigned)
-st.sidebar.title("🔍 Model Selection")
-selected_model = st.sidebar.selectbox(
+# Sidebar for model selection
+st.sidebar.title("Select Model")
+selected_model = st.sidebar.radio(
     "Choose a model:",
     options=["LLaMA", "Mixtral"]
 )
 
-# Title section with subtitle and instructions
-st.title("GSOC AI Assistant 💡")
-st.subheader("Retrieve contextual information from GSOC Data")
-
-st.write("---")
-
-# Introduce a two-column layout
-col1, col2 = st.columns([3, 1])
-
-# Main Column: Chat interface
-with col1:
-    st.header("💬 Chat with GSOC Data")
-
-    # Input area for the user's query
-    user_query = st.text_input("🔍 Ask a question:")
-
-    if user_query:
-        with st.spinner("Fetching response..."):
-            # Fetch response from the selected model
-            retriever, model, client = initialize_vector_store()
-            response, scores, context = get_model_response(selected_model, user_query, retriever, model, client)
-        
-        # Chat interface display
-        st.markdown("### 🤖 AI Response")
-        chat_interface(user_query, response)
-
-# Right Column: Context and Scores Display
-with col2:
-    st.header("📊 Context & Scores")
-    
-    # Dynamically show the response scores and context
-    if user_query:
-        display_scores(context, scores)
-    else:
-        st.info("Ask a question to view context and scores!")
-
-# Footer area with a separator
-st.write("---")
-st.markdown("**GSOC Data Retrieval System | Powered by LangChain and Pinecone**")
+# Main chat interface
+st.title("GSOC")
 INDEX_NAME = 'rag-gsoc-data-dlproject'
 
 @st.cache_resource
