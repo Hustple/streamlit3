@@ -87,17 +87,51 @@ def initialize_vector_store():
 retriever, model, client = initialize_vector_store()
 
 
-# Chat functionality
-user_query = st.text_input("Ask a question:")
-if user_query:
-    with st.spinner("Fetching response..."):
-        # Fetch response from the selected model
-        response, scores, context = get_model_response(selected_model, user_query,retriever,model,client)
-    
-    # Display the chat interface
-    chat_interface(user_query, response)
+st.write("## 🤖 **Ask a Question:**")
 
-    # Display the context and scores on the right
-    st.write("---")
-    st.header("Context and Scores")
-    display_scores(context, scores)
+# Two-column layout for enhanced structure
+col1, col2 = st.columns([2, 1])
+
+# Left column (Chat Interface)
+with col1:
+    user_query = st.text_input("🔍 Type your question here", key="user_query")
+
+    if user_query:
+        with st.spinner("Generating response..."):
+            try:
+                response, scores, context = get_model_response(selected_model, user_query, retriever, model, client)
+
+                # Display the response inside a chat box
+                st.markdown("### 💬 **AI Response**")
+                st.markdown(f"<div class='chatbox'>**User:** {user_query}<br>**AI:** {response}</div>", unsafe_allow_html=True)
+
+            except Exception as e:
+                st.error(f"Error occurred: {str(e)}")
+
+# Right column (Context & Scores)
+with col2:
+    st.markdown("### 📊 **Context and Scores**")
+    if user_query:
+        st.markdown("<div class='context-scores'>", unsafe_allow_html=True)
+        
+        # Display the retrieved context
+        st.subheader("📑 Context")
+        st.write(context if context else "No context retrieved.")
+
+        # Display the scores
+        st.subheader("🔢 Scores")
+        if scores:
+            display_scores(context, scores)
+        else:
+            st.write("No scores available.")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# Footer and Branding
+st.write("---")
+st.markdown("""
+    <div style='text-align: center;'>
+        <small>GSOC Data Retrieval System | Powered by LangChain, Pinecone, HuggingFace, and Google Gemini</small>
+    </div>
+""", unsafe_allow_html=True)
+
