@@ -7,6 +7,7 @@ from langchain_pinecone import PineconeVectorStore
 from vector_store.vectorstore import PineconeManager
 pinecone_api_key = "108137e8-b872-4ff4-a279-c61e8a7ec4ca"
 groq_api_key ="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"
+gemini_api_key ="AIzaSyCo5xy1plbKOps2Gq9K64dvm01njXWiYtY"
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import google.generativeai as genai
 from groq import Groq
@@ -32,6 +33,9 @@ def initialize_vector_store():
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vector_store = PineconeVectorStore(index=pinecone_manager.index, embedding=embeddings)
     retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+    genai.configure(api_key=gemini_api_key)
+    tuned_model = genai.get_tuned_model('tunedModels/finetuninggemmafordl1-xxcubsl6ftaf')
+    model = genai.GenerativeModel(model_name=tuned_model.name)
     client = Groq(
         api_key=groq_api_key
     )
